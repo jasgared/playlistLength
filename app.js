@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyAPy0nrMJoyYQmvCXKUjz8fi8UQKkWs1JM";
+const apiKey = "your_key_here";
 const playlistId = "PLB03EA9545DD188C3";
 
 
