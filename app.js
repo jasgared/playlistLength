@@ -1,5 +1,6 @@
-const apiKey = "your_key_here";
+const apiKey = "AIzaSyAYE4V54MwddPdzGfcxtYBuI6N1aMHUphk";
 const playlistId = "PLB03EA9545DD188C3";
+const durations = [];
 
 function getLength(e) {
     let url = "https://www.googleapis.com/youtube/v3/playlistItems?" +
@@ -19,7 +20,7 @@ function getLength(e) {
         })
     }).then(function(arr) {
             arr.forEach(function (video) {
-                //console.log(video.videoId);
+                // console.log(video.videoId);
                 let video_url = "https://www.googleapis.com/youtube/v3/videos?" +
                 "part=contentDetails" +
                 "&key=" + apiKey +
@@ -27,9 +28,8 @@ function getLength(e) {
                 fetch(video_url).then(function (response) {
                     return response.json();
                 }).then(function(data) {
-                    console.log(data.items[0].contentDetails.duration);
-                    time = data.items[0].contentDetails.duration;
-                    return time
+                    // console.log(data.items[0].contentDetails.duration);
+                    durations.push(data.items[0].contentDetails.duration);
                 }).catch(function(error) {
                     console.log("error video: " + error);
                 })
@@ -39,12 +39,38 @@ function getLength(e) {
         })
 }
 
+function toSeconds(total, time) {
+    let i= 0
+    let num = ""
+    let numberLetter = /^[0-9]$/;
+    time = time.slice(1).split('T');
+    let t = {
+        "H" : 0,
+        "M" : 0,
+        "S" : 0
+    }
+    while(i < time[1].length) {
+        if(time[1].charAt(i).match(numberLetter)) {
+            num += time[1].charAt(i)
+        }
+        else{
+            t[time[1].charAt(i)] = parseInt(num);
+            num = "";
+        }
+        i++;
+    }
+    console.log("video time: " + (t["H"] * 60 * 60 + t["M"] * 60 + t["S"]));
+    return total + (t["H"] * 60 * 60 + t["M"] * 60 + t["S"]);
+}
 
-function getTime() {
-    let time = getLength();
-    let hours = 0;
-    let minutes = 0; 
-    let seconds = 0;
+function main() {
+    let totalTime = 0;
+    console.log("bfore");
+    getLength();
+    console.log("after");
+    totalTime = durations.reduce(toSeconds);
+    return totalTime;
+    
 }
 
 
